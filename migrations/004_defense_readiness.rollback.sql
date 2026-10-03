@@ -1,0 +1,11 @@
+DROP TABLE IF EXISTS addon_inventory_adjustments;
+DROP TABLE IF EXISTS system_settings;
+ALTER TABLE notification_outbox DROP INDEX IF EXISTS ix_notification_actor;
+ALTER TABLE notification_outbox DROP COLUMN IF EXISTS reason,DROP COLUMN IF EXISTS actor_user_id;
+ALTER TABLE order_headers DROP INDEX IF EXISTS ix_order_creator;
+ALTER TABLE order_headers DROP COLUMN IF EXISTS order_source,DROP COLUMN IF EXISTS created_by_user_id;
+ALTER TABLE addons DROP COLUMN IF EXISTS is_active;
+ALTER TABLE inventory_adjustments DROP FOREIGN KEY IF EXISTS fk_inventory_adjustment_cake;
+ALTER TABLE inventory_adjustments DROP INDEX IF EXISTS ix_inventory_adjustment;
+ALTER TABLE inventory_adjustments DROP COLUMN IF EXISTS actor_user_id,DROP COLUMN IF EXISTS resulting_stock,DROP COLUMN IF EXISTS adjustment_type;
+ALTER TABLE inventory_adjustments ADD CONSTRAINT inventory_adjustments_ibfk_1 FOREIGN KEY (cake_id) REFERENCES cakes(id) ON DELETE CASCADE;

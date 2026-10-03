@@ -1,0 +1,1 @@
+<?php declare(strict_types=1);$query=['from'=>$_GET['from']??null,'to'=>$_GET['to']??null,'format'=>'csv'];$query=array_filter($query,fn($v)=>$v!==null&&$v!=='');header('Location: combined_reports.php?'.http_build_query($query),true,302);exit;

@@ -1,0 +1,6 @@
+Options -Indexes
+
+# Uploaded files are static assets only. Never allow server-side execution here.
+<FilesMatch "\.(php[0-9]?|phtml|phar|cgi|pl|py|sh)$">
+  Require all denied
+</FilesMatch>
