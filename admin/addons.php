@@ -130,7 +130,8 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 }
 
 /* ================= DATA ================= */
-$addons = $pdo->query("SELECT * FROM addons ORDER BY name")->fetchAll();
+$addons = $pdo->query("SELECT * FROM addons WHERE is_active=1 ORDER BY name")->fetchAll();
+$archivedAddonCount = (int) $pdo->query("SELECT COUNT(*) FROM addons WHERE is_active=0")->fetchColumn();
 
 $inventory = $pdo->query("
     SELECT ia.*, a.name,u.name actor_name
@@ -164,9 +165,10 @@ include __DIR__.'/../inc/header.php';
 </div>
 
 <!-- ================= ADDON FORM (UNCHANGED) ================= -->
-<div class="card shadow-sm mb-4">
+<div class="card shadow-sm mb-4" id="addon-editor" tabindex="-1">
 <div class="card-body">
-<h5 class="mb-3"><?= $editRow?'Edit Addon':'Add New Addon' ?></h5>
+<h5 class="mb-1"><?= $editRow?'Edit Addon':'Add New Addon' ?></h5>
+<?php if ($editRow): ?><p class="text-muted small mb-3">Editing: <?= esc($editRow['name']) ?>. Save changes or <a href="addons.php">cancel</a>.</p><?php endif; ?>
 
 <form method="post" enctype="multipart/form-data" class="row g-2"><?= csrf_field() ?>
 <?php if($editRow): ?><input type="hidden" name="id" value="<?= $editRow['id'] ?>"><?php endif; ?>
@@ -207,7 +209,7 @@ onchange="this.form.price.disabled=this.checked">
 <!-- ================= ADDONS TABLE (UNCHANGED) ================= -->
 <div class="card shadow-sm">
 <div class="card-body">
-<h5 class="mb-3">All Addons</h5>
+<div class="d-flex justify-content-between align-items-center mb-3"><h5 class="mb-0">Active Addons</h5><?php if ($archivedAddonCount > 0): ?><span class="text-muted small"><?= $archivedAddonCount ?> archived add-on<?= $archivedAddonCount === 1 ? "" : "s" ?> retained for order history.</span><?php endif; ?></div>
 
 <div class="table-responsive">
 <table class="table table-bordered table-hover align-middle">
@@ -230,7 +232,7 @@ onchange="this.form.price.disabled=this.checked">
 <td><?= (int)$a['quantity'] ?></td>
 <td><?= $a['id'] ?></td>
 <td class="text-nowrap">
-<a href="?edit=<?= $a['id'] ?>" class="btn btn-sm btn-outline-primary">Edit</a>
+<a href="?edit=<?= $a['id'] ?>#addon-editor" class="btn btn-sm btn-outline-primary">Edit</a>
 <form method="post" class="d-inline" onsubmit="return confirm('Delete this addon?');"><?= csrf_field() ?>
 <input type="hidden" name="id" value="<?= $a['id'] ?>">
 <button name="delete" class="btn btn-sm btn-outline-danger">Delete</button>

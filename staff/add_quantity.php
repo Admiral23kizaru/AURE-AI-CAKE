@@ -55,7 +55,7 @@ if (isset($_GET['ajax'])) {
         WHERE oi.cake_id = ?
           AND o.status = 'Completed'
           AND o.payment_status = 'paid'
-          AND DATE(o.created_at) BETWEEN ? AND ?
+          AND DATE(o.completed_at) BETWEEN ? AND ?
     ");
     $soldStmt->execute([$cakeId, $from, $to]);
     $sold = (int)$soldStmt->fetchColumn();

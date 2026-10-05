@@ -92,7 +92,7 @@ function dashboard_start(string $title): void
       <link rel="icon" href="/AI-CAKE/uploads/logo/logotab.png">
       <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
       <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
-      <link href="/AI-CAKE/assets/css/app.css?v=20261001-1" rel="stylesheet">
+      <link href="/AI-CAKE/assets/css/app.css?v=20261006-1" rel="stylesheet">
       <link href="/AI-CAKE/assets/css/dashboard.css?v=20261001-1" rel="stylesheet">
     </head>
     <body class="dashboard-page">

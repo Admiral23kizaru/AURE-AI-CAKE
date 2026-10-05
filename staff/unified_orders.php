@@ -42,6 +42,15 @@ function unified_orders_redirect_query(): string
     return unified_orders_query(is_array($parameters) ? $parameters : []);
 }
 
+function normal_cake_thumbnail_url(?string $storedPath): ?string
+{
+    $name = basename(str_replace('\\', '/', trim((string) $storedPath)));
+    if ($name === '' || !preg_match('/\A[A-Za-z0-9][A-Za-z0-9._-]*\.(?:png|jpe?g|webp)\z/i', $name)) {
+        return null;
+    }
+    return is_file(__DIR__ . '/../uploads/' . $name) ? '/AI-CAKE/uploads/' . rawurlencode($name) : null;
+}
+
 $message = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     require_post_csrf();
@@ -161,9 +170,20 @@ page_start('Order management');
 
           <div class="border-top border-bottom py-3 my-3">
             <?php if ($order['order_type'] === 'normal'): ?>
-              <?php foreach ($order['items'] as $item): ?>
-                <div class="mb-3"><strong><?= e($item['name'] ?? 'Cake') ?> x <?= (int) $item['qty'] ?></strong><div class="small">Base price: &#8369;<?= number_format((float) $item['price'], 2) ?></div><?php foreach ($item['options'] as $option): ?><div class="small text-muted"><?= e($option['option_type']) ?>: <?= e($option['option_name']) ?><?php if ((float) $option['price_snapshot'] !== 0.0): ?> (&#8369;<?= number_format((float) $option['price_snapshot'], 2) ?> x <?= (int) $option['quantity'] ?>)<?php endif; ?></div><?php endforeach; ?></div>
-              <?php endforeach; ?>
+              <div class="normal-order-items">
+                <?php foreach ($order['items'] as $item): ?>
+                  <?php $thumbnailUrl = normal_cake_thumbnail_url($item['picture'] ?? null); $cakeName = (string) ($item['name'] ?? 'Cake'); ?>
+                  <div class="normal-order-item">
+                    <div class="normal-order-item__media">
+                      <?php if ($thumbnailUrl): ?>
+                        <img src="<?= e($thumbnailUrl) ?>" alt="<?= e($cakeName) ?>" loading="lazy" onerror="this.classList.add('d-none');this.nextElementSibling.classList.remove('d-none');">
+                      <?php endif; ?>
+                      <span class="normal-order-item__fallback<?= $thumbnailUrl ? ' d-none' : '' ?>" role="img" aria-label="Cake product image unavailable"><i class="bi bi-cake2" aria-hidden="true"></i></span>
+                    </div>
+                    <div class="normal-order-item__details"><strong><?= e($cakeName) ?> x <?= (int) $item['qty'] ?></strong><div class="small">Base price: &#8369;<?= number_format((float) $item['price'], 2) ?></div><?php foreach ($item['options'] as $option): ?><div class="small text-muted"><?= e($option['option_type']) ?>: <?= e($option['option_name']) ?><?php if ((float) $option['price_snapshot'] !== 0.0): ?> (&#8369;<?= number_format((float) $option['price_snapshot'], 2) ?> x <?= (int) $option['quantity'] ?>)<?php endif; ?></div><?php endforeach; ?></div>
+                  </div>
+                <?php endforeach; ?>
+              </div>
             <?php elseif ($order['ai']): ?>
               <?php $imageUrl = ai_design_image_url($order['ai']['picture']); $hasImage = $imageUrl !== null && ai_design_image_exists($order['ai']['picture']); $hasSize = trim((string) $order['ai']['cake_size']) !== ''; ?>
               <div class="row g-3 align-items-start"><div class="col-4"><div class="ai-design-thumbnail ai-design-thumbnail--dashboard"><?php if ($hasImage): ?><img src="<?= e($imageUrl) ?>" class="img-fluid" alt="AI cake design" loading="lazy" onerror="this.classList.add('d-none');this.nextElementSibling.classList.remove('d-none');"><?php endif; ?><span class="ai-design-thumbnail__fallback<?= $hasImage ? ' d-none' : '' ?>" role="img" aria-label="AI cake design image unavailable"><i class="bi bi-image" aria-hidden="true"></i><span>Image unavailable</span></span></div></div><div class="col-8"><strong><?= e($hasSize ? $order['ai']['cake_size'] : 'Size not recorded') ?></strong><p class="small mb-1"><strong>Design:</strong> <?= e($order['ai']['personalize']) ?></p><?php if ($order['customer_note']): ?><p class="small mb-2"><strong>Note:</strong> <?= e($order['customer_note']) ?></p><?php endif; ?><a href="<?= e($conversationUrl) ?>?order_number=<?= urlencode($order['order_number']) ?>">Open customer conversation</a><?php if (!$hasSize): ?><form method="post" class="row g-2 mt-2"><input type="hidden" name="return_query" value="<?= e($returnQuery) ?>"><?= csrf_field() ?><input type="hidden" name="id" value="<?= (int) $order['id'] ?>"><div class="col"><label class="visually-hidden" for="legacy-size-<?= (int) $order['id'] ?>">Record legacy AI cake size</label><select id="legacy-size-<?= (int) $order['id'] ?>" name="cake_size" class="form-select form-select-sm" required><option value="">Record known size</option><option>Small</option><option>Medium</option><option>Large</option></select></div><div class="col-auto"><button name="legacy_ai_size" class="btn btn-sm btn-outline-primary">Save size</button></div></form><?php endif; ?></div></div>

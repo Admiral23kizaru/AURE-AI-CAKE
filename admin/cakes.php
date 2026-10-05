@@ -293,7 +293,7 @@ include __DIR__ . '/../inc/header.php';
   </div>
 
   <!-- WIDE FORM -->
-  <div class="form-card">
+  <div class="form-card" id="cake-editor" tabindex="-1">
     <form id="cakeForm" method="post" enctype="multipart/form-data"><?= csrf_field() ?>
       <input type="hidden" name="id" value="<?php echo htmlspecialchars($edit['id']??''); ?>">
       <div class="row g-2">
@@ -490,7 +490,7 @@ include __DIR__ . '/../inc/header.php';
               <!-- Actions -->
               <td class="text-nowrap">
                 <a class="btn btn-sm btn-outline-primary mb-1"
-                   href="cakes.php?action=edit&id=<?php echo $c['id']; ?>">
+                   href="cakes.php?action=edit&id=<?php echo $c['id']; ?>#cake-editor">
                   Edit
                 </a>
                 <form method="post" class="d-inline" onsubmit="return confirm('Archive this cake, or permanently delete it only if it has never been used?')"><?=csrf_field()?><button class="btn btn-sm btn-outline-danger mb-1" name="delete_cake" value="<?=(int)$c['id']?>">Archive / delete</button></form>
