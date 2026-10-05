@@ -35,11 +35,12 @@ function dashboard_link_is_active(array $item): bool
 
 function dashboard_navigation(string $role): array
 {
+    $orderWorkspaceUrl = $role === 'admin' ? '/AI-CAKE/admin/orders.php' : '/AI-CAKE/staff/unified_orders.php';
     $operations = [
-        ['label' => 'Orders', 'icon' => 'bi-receipt', 'href' => '/AI-CAKE/staff/unified_orders.php', 'paths' => ['/staff/unified_orders.php', '/admin/orders.php', '/admin/add_orders.php', '/admin/order_history.php'], 'exclude_query' => ['order_type' => 'ai']],
+        ['label' => 'Orders', 'icon' => 'bi-receipt', 'href' => $orderWorkspaceUrl, 'paths' => ['/staff/unified_orders.php', '/admin/orders.php', '/admin/add_orders.php', '/admin/order_history.php'], 'exclude_query' => ['order_type' => 'ai']],
         ['label' => 'Pickup schedule', 'icon' => 'bi-calendar2-check', 'href' => '/AI-CAKE/staff/pickup_schedule.php', 'paths' => ['/staff/pickup_schedule.php']],
         ['label' => 'Assisted order', 'icon' => 'bi-person-plus', 'href' => '/AI-CAKE/staff/assisted_order.php', 'paths' => ['/staff/assisted_order.php']],
-        ['label' => 'AI orders', 'icon' => 'bi-stars', 'href' => '/AI-CAKE/staff/unified_orders.php?order_type=ai', 'paths' => ['/staff/unified_orders.php', '/staff/ai_orders.php', '/admin/ai_orders.php'], 'query' => ['order_type' => 'ai']],
+        ['label' => 'AI orders', 'icon' => 'bi-stars', 'href' => $orderWorkspaceUrl . '?order_type=ai', 'paths' => ['/staff/unified_orders.php', '/staff/ai_orders.php', '/admin/ai_orders.php'], 'query' => ['order_type' => 'ai']],
         ['label' => 'AI conversation', 'icon' => 'bi-chat-square-text', 'href' => '/AI-CAKE/staff/chat.php', 'paths' => ['/staff/chat.php', '/admin/chat.php']],
     ];
 
@@ -117,6 +118,21 @@ function dashboard_end(): void
         </div>
       </div>
       <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+      <script>
+      (() => {
+        const sidebar = document.querySelector('.dashboard-sidebar');
+        if (!sidebar || !window.sessionStorage) return;
+        const storageKey = 'ai-cake:dashboard-sidebar-scroll:v1';
+        const savedPosition = Number(sessionStorage.getItem(storageKey));
+        if (Number.isFinite(savedPosition) && savedPosition > 0) {
+          requestAnimationFrame(() => { sidebar.scrollTop = savedPosition; });
+        }
+        const savePosition = () => sessionStorage.setItem(storageKey, String(sidebar.scrollTop));
+        sidebar.addEventListener('scroll', savePosition, { passive: true });
+        document.querySelectorAll('.dashboard-sidebar a').forEach((link) => link.addEventListener('click', savePosition));
+        window.addEventListener('pagehide', savePosition);
+      })();
+      </script>
     </body>
     </html>
     <?php

@@ -3,6 +3,7 @@ declare(strict_types=1);
 require __DIR__ . '/inc/db.php';
 require __DIR__ . '/inc/page.php';
 require __DIR__ . '/inc/order_service.php';
+require __DIR__ . '/inc/ai_design.php';
 require_customer();
 
 $id = (int) ($_GET['id'] ?? 0);
@@ -55,7 +56,13 @@ page_start('Order ' . $order['order_number']);
         <?php foreach ($items as $item): ?>
           <div class="border-top py-3"><div class="d-flex justify-content-between"><strong><?= e($item['name'] ?? 'Cake') ?> x <?= (int) $item['qty'] ?></strong><strong>&#8369;<?= number_format((float) $item['price'] * (int) $item['qty'], 2) ?></strong></div><?php foreach ($item['options'] as $option): ?><div class="small text-muted"><?= e($option['option_type']) ?>: <?= e($option['option_name']) ?><?php if ((float) $option['price_snapshot'] !== 0.0): ?> (&#8369;<?= number_format((float) $option['price_snapshot'], 2) ?> x <?= (int) $option['quantity'] ?>)<?php endif; ?></div><?php endforeach; ?></div>
         <?php endforeach; ?>
-        <?php if ($ai): ?><div class="row g-3 border-top py-3"><div class="col-sm-4"><?php if ($ai['picture']): ?><img src="uploads/ai-cakes/<?= e(basename((string) $ai['picture'])) ?>" class="img-fluid rounded" alt="Generated cake design"><?php endif; ?></div><div class="col-sm-8"><div class="d-flex align-items-start justify-content-between gap-3"><div><h2 class="h5"><?= e($ai['cake_size'] ?: 'Cake size pending') ?> AI cake</h2><p><strong>Design request:</strong> <?= e($ai['personalize']) ?></p><?php if ($order['customer_note']): ?><p><strong>Note:</strong> <?= e($order['customer_note']) ?></p><?php endif; ?></div><a class="conversation-icon-link" href="chat.php?order_id=<?= (int) $order['ai_order_id'] ?>" aria-label="Open design conversation" title="Open design conversation"><i class="bi bi-chat-dots" aria-hidden="true"></i></a></div></div></div><?php endif; ?>
+        <?php if ($ai): ?>
+          <?php $aiImageUrl = ai_design_image_url($ai['picture']); $hasAiImage = $aiImageUrl !== null && ai_design_image_exists($ai['picture']); ?>
+          <div class="row g-3 border-top py-3">
+            <div class="col-sm-4"><div class="ai-design-thumbnail ai-design-thumbnail--customer"><?php if ($hasAiImage): ?><img src="<?= e($aiImageUrl) ?>" class="img-fluid" alt="Generated cake design" loading="lazy" onerror="this.classList.add('d-none');this.nextElementSibling.classList.remove('d-none');"><?php endif; ?><span class="ai-design-thumbnail__fallback<?= $hasAiImage ? ' d-none' : '' ?>" role="img" aria-label="Generated cake design image unavailable"><i class="bi bi-image" aria-hidden="true"></i><span>Design image unavailable</span></span></div></div>
+            <div class="col-sm-8"><div class="d-flex align-items-start justify-content-between gap-3"><div><h2 class="h5"><?= e($ai['cake_size'] ?: 'Size not recorded') ?> AI cake</h2><p><strong>Design request:</strong> <?= e($ai['personalize']) ?></p><?php if ($order['customer_note']): ?><p><strong>Note:</strong> <?= e($order['customer_note']) ?></p><?php endif; ?></div><a class="conversation-icon-link" href="chat.php?order_id=<?= (int) $order['ai_order_id'] ?>" aria-label="Open design conversation" title="Open design conversation"><i class="bi bi-chat-dots" aria-hidden="true"></i></a></div></div>
+          </div>
+        <?php endif; ?>
         <dl class="row mt-3">
           <dt class="col-sm-4">Pickup</dt><dd class="col-sm-8"><?= e($order['pickup_date']) ?> at <?= e(substr((string) $order['pickup_time'], 0, 5)) ?></dd>
           <dt class="col-sm-4">Shop</dt><dd class="col-sm-8"><?= e($order['store_name']) ?></dd>

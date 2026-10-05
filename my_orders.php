@@ -31,7 +31,7 @@ page_start('My orders');
       <?php foreach ($orders as $order): ?>
         <article class="app-card customer-order-card">
           <div class="customer-order-card__top"><div><p class="eyebrow mb-1"><?= e($order['order_type'] === 'ai' ? 'AI cake order' : 'Cake order') ?></p><h2><?= e($order['order_number']) ?></h2></div><span class="status-pill"><?= e($order['status']) ?></span></div>
-          <dl class="customer-order-card__details"><div><dt><i class="bi bi-calendar3" aria-hidden="true"></i>Pickup</dt><dd><?= e($order['pickup_date']) ?> · <?= e(substr((string) $order['pickup_time'], 0, 5)) ?></dd></div><div><dt><i class="bi bi-wallet2" aria-hidden="true"></i>Total</dt><dd>₱<?= number_format((float) $order['total'], 2) ?></dd></div><div><dt><i class="bi bi-credit-card" aria-hidden="true"></i>Payment</dt><dd><?= e(ucfirst((string) $order['payment_status'])) ?></dd></div></dl>
+          <dl class="customer-order-card__details"><div><dt><i class="bi bi-calendar3" aria-hidden="true"></i>Pickup</dt><dd><?= e($order['pickup_date']) ?> &middot; <?= e(substr((string) $order['pickup_time'], 0, 5)) ?></dd></div><div><dt><i class="bi bi-wallet2" aria-hidden="true"></i>Total</dt><dd>&#8369;<?= number_format((float) $order['total'], 2) ?></dd></div><div><dt><i class="bi bi-credit-card" aria-hidden="true"></i>Payment</dt><dd><?= e(ucfirst((string) $order['payment_status'])) ?></dd></div></dl>
           <a class="btn btn-outline-primary w-100" href="order_details.php?id=<?= (int) $order['id'] ?>">Track and view details <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i></a>
         </article>
       <?php endforeach; ?>

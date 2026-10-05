@@ -4,6 +4,7 @@ declare(strict_types=1);
 require __DIR__ . '/inc/db.php';
 require __DIR__ . '/inc/page.php';
 require __DIR__ . '/inc/ai_order_service.php';
+require __DIR__ . '/inc/ai_design.php';
 
 require_customer();
 
@@ -49,6 +50,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+$aiImageUrl = ai_design_image_url($order['picture']);
+$hasAiImage = $aiImageUrl !== null && ai_design_image_exists($order['picture']);
 page_start('Schedule AI cake');
 ?>
 <main class="container py-4" style="max-width:860px">
@@ -56,7 +59,7 @@ page_start('Schedule AI cake');
   <section class="app-card p-4 p-md-5 mt-3">
     <div class="row g-4">
       <div class="col-md-5">
-        <img src="uploads/ai-cakes/<?= e(basename((string) $order['picture'])) ?>" class="img-fluid rounded" alt="Generated cake design">
+        <div class="ai-design-thumbnail ai-design-thumbnail--customer"><?php if ($hasAiImage): ?><img src="<?= e($aiImageUrl) ?>" class="img-fluid" alt="Generated cake design" loading="lazy" onerror="this.classList.add('d-none');this.nextElementSibling.classList.remove('d-none');"><?php endif; ?><span class="ai-design-thumbnail__fallback<?= $hasAiImage ? ' d-none' : '' ?>" role="img" aria-label="Generated cake design image unavailable"><i class="bi bi-image" aria-hidden="true"></i><span>Design image unavailable</span></span></div>
         <div class="eyebrow mt-3"><?= e($order['order_number']) ?></div>
         <p><?= e($order['personalize']) ?></p>
       </div>

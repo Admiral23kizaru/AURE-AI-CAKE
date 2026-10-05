@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/inc/db.php';
 require __DIR__ . '/inc/page.php';
+require __DIR__ . '/inc/ai_design.php';
 
 require_customer();
 
@@ -18,11 +19,6 @@ function customer_ai_order(PDO $pdo, int $id = 0, string $number = ''): ?array
     return $query->fetch() ?: null;
 }
 
-function ai_image_url(?string $path): string
-{
-    $name = basename((string) $path);
-    return $name !== '' ? 'uploads/ai-cakes/' . rawurlencode($name) : '';
-}
 
 if (isset($_GET['ajax'])) {
     header('Content-Type: application/json; charset=utf-8');
@@ -121,7 +117,7 @@ page_start('AI cake conversation');
     <section class="app-card p-4 p-lg-5 conversation-card">
       <div class="row g-4">
         <aside class="col-sm-4 conversation-design">
-          <div class="conversation-design__image"><?php if ($order['picture']): ?><img src="<?= e(ai_image_url($order['picture'])) ?>" class="img-fluid" alt="Generated cake design"><?php else: ?><i class="bi bi-cake2" aria-hidden="true"></i><?php endif; ?></div>
+          <?php $aiImageUrl = ai_design_image_url($order['picture']); $hasAiImage = $aiImageUrl !== null && ai_design_image_exists($order['picture']); ?><div class="conversation-design__image ai-design-thumbnail ai-design-thumbnail--customer"><?php if ($hasAiImage): ?><img src="<?= e($aiImageUrl) ?>" class="img-fluid" alt="Generated cake design" loading="lazy" onerror="this.classList.add('d-none');this.nextElementSibling.classList.remove('d-none');"><?php endif; ?><span class="ai-design-thumbnail__fallback<?= $hasAiImage ? ' d-none' : '' ?>" role="img" aria-label="Generated cake design image unavailable"><i class="bi bi-image" aria-hidden="true"></i><span>Design image unavailable</span></span></div>
           <div class="eyebrow mt-3">AI design <?= e($order['order_number']) ?></div>
           <p class="conversation-design__prompt"><?= e($order['personalize']) ?></p>
         </div>
