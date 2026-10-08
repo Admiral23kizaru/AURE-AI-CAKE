@@ -25,7 +25,7 @@ function semaphore_otp(string $recipient,string $code): array {
     return ['ok'=>$ok,'id'=>$messageId,'status'=>$status,'error'=>$errorCode];
 }
 function render_sms_template(string $name,array $d): string {
-    $order=(string)($d['order_number']??''); $map=['order_confirmed'=>"Aure Cakes: {$order} confirmed.",'order_ready'=>"Aure Cakes: {$order} ready for pickup.",'order_cancelled'=>"Aure Cakes: {$order} cancelled.",'pickup_reminder'=>"Aure Cakes: {$order} pickup is tomorrow.",'custom_message'=>(string)($d['message']??'')];
+    $order=(string)($d['order_number']??''); $map=['order_confirmed'=>"Aure Cakes: {$order} confirmed.",'order_preparing'=>"Aure Cakes: {$order} is being prepared.",'order_ready'=>"Aure Cakes: {$order} ready for pickup.",'order_completed'=>"Aure Cakes: {$order} completed. Thank you.",'order_cancelled'=>"Aure Cakes: {$order} cancelled.",'pickup_reminder'=>"Aure Cakes: {$order} pickup is tomorrow.",'custom_message'=>(string)($d['message']??'')];
     return $map[$name]??'Aure Cakes order update.';
 }
 

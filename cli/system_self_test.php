@@ -16,6 +16,7 @@ $run = 'TST' . strtoupper(bin2hex(random_bytes(4)));
 $date = '2099-12-31';
 $time = '16:45';
 $created = ['users'=>[], 'cakes'=>[], 'addons'=>[], 'options'=>[], 'orders'=>[], 'headers'=>[], 'items'=>[], 'ai'=>[]];
+$fixtureOrderHeaderIds = [];
 $tests = 0;
 $failures = [];
 
@@ -100,6 +101,10 @@ $before = [];
 foreach ($countTables as $table) $before[$table] = (int) scalar($pdo, 'SELECT COUNT(*) FROM ' . $table);
 
 try {
+    $sameDayPastRejected = false;
+    try { validate_pickup_schedule(date('Y-m-d'), '00:00'); } catch (InvalidArgumentException) { $sameDayPastRejected = true; }
+    check($sameDayPastRejected, 'A past same-day pickup time is rejected.');
+
     $email = strtolower($run) . 'customer@example.test';
     $phone = '+639170000001';
     $pdo->prepare("INSERT INTO users(name,email,phone,password_hash,role,is_active,phone_verified_at) VALUES(?,?,?,?, 'customer',1,NOW())")->execute([$run . ' Customer', $email, $phone, password_hash('TestPass123!', PASSWORD_DEFAULT)]);
@@ -139,6 +144,7 @@ try {
     $pdo->prepare('INSERT INTO pickup_capacities(pickup_date,pickup_time,capacity,reserved,active) VALUES(?,?,2,0,1)')->execute([$date, $time]);
     $payload = ['payment'=>'cash','pickup_date'=>$date,'pickup_time'=>$time,'total'=>0.01,'cart'=>[['id'=>$cakeId,'qty'=>2,'price'=>0.01,'addons'=>[['id'=>$addonId,'qty'=>99]],'options'=>[['id'=>$optionId]]]]];
     $first = create_normal_order($pdo, $payload, $customerId);
+    $fixtureOrderHeaderIds[] = (int) $first['id'];
     check(abs((float) $first['total'] - 320.0) < 0.001, 'Normal order ignores browser prices and recalculates cake, option, and add-on totals.');
     check((int) scalar($pdo, 'SELECT quantity FROM cakes WHERE id=?', [$cakeId]) === 8, 'Cake inventory reserved.');
     check((int) scalar($pdo, 'SELECT stock FROM cake_options WHERE id=?', [$optionId]) === 8, 'Option inventory reserved.');
@@ -154,6 +160,7 @@ try {
     $secondPayload['cart'][0]['qty'] = 1;
     $secondPayload['cart'][0]['addons'][0]['qty'] = 2;
     $second = create_normal_order($pdo, $secondPayload, $customerId, $staffId, 'staff_assisted');
+    $fixtureOrderHeaderIds[] = (int) $second['id'];
     check((string)scalar($pdo,'SELECT order_source FROM order_headers WHERE id=?',[$second['id']])==='staff_assisted' && (int)scalar($pdo,'SELECT created_by_user_id FROM order_headers WHERE id=?',[$second['id']])===$staffId,'Assisted order retains customer ownership and staff attribution.');
     check((int)scalar($pdo,'SELECT quantity FROM order_reservations WHERE order_header_id=? AND resource_type=\'addon\'',[$second['id']])===2,'Assisted order preserves its explicit add-on quantity.');
     queue_custom_sms($pdo,(int)$second['id'],$staffId,$phone,'Your assisted order is ready for staff review.','Automated audit test');
@@ -195,6 +202,7 @@ try {
     try { create_ai_order($pdo, $aiId, $staffId, $date, $time, 'Medium', 'Wrong owner attempt'); } catch (RuntimeException) { $wrongOwner = true; }
     check($wrongOwner, 'Another account cannot schedule a customer AI design.');
     $aiOrder = create_ai_order($pdo, $aiId, $customerId, $date, $time, 'Medium', 'Automated AI order test');
+    $fixtureOrderHeaderIds[] = (int) $aiOrder['id'];
     $pdo->prepare("INSERT INTO ai_cake_messages(order_id,order_number,sender,message) VALUES(?,?,'customer',?)")->execute([$aiId,$aiNumber,$run.' temporary chat message']);
     check((int)scalar($pdo,'SELECT COUNT(*) FROM ai_cake_messages WHERE order_id=? AND message=?',[$aiId,$run.' temporary chat message'])===1,'AI conversation accepts a tagged customer test message.');
     check((int) scalar($pdo, 'SELECT reserved FROM ai_capacities WHERE pickup_date=? AND size=\'Medium\'', [$date]) === 1, 'AI size capacity is reserved transactionally.');
@@ -258,7 +266,11 @@ try {
     refresh_recommendation($pdo,$favoriteCakeId);$pdo->prepare("INSERT INTO favorites(user_id,favorite_type,cake_id) VALUES(?,'cake',?)")->execute([$customerId,$favoriteCakeId]);$ranked=recommended_cakes_for_user($pdo,$customerId,10);
     check((int)($ranked[0]['id']??0)===$favoriteCakeId && (int)($ranked[0]['preference_score']??0)>=5,'Hybrid recommendations rank a directly favored eligible cake first.');
     $fallback=recommended_cakes_for_user($pdo,null,10);check(count($fallback)>=2 && (float)$fallback[0]['average_rating']>8.0,'Customers without preference history receive rating-based fallback ordering.');
-    check((int) scalar($pdo, "SELECT COUNT(*) FROM notification_outbox WHERE event_key LIKE 'order:%' AND final_state='sent'") === 0, 'No SMS was sent during automated testing.');
+    $fixtureSmsSent = 0;
+    foreach ($fixtureOrderHeaderIds as $fixtureHeaderId) {
+        $fixtureSmsSent += (int) scalar($pdo, "SELECT COUNT(*) FROM notification_outbox WHERE event_key LIKE ? AND final_state='sent'", ['order:' . $fixtureHeaderId . ':%']);
+    }
+    check($fixtureSmsSent === 0, 'No SMS was sent during automated testing.');
 } catch (Throwable $error) {
     $failures[] = 'Unexpected test exception: ' . $error->getMessage();
     fwrite(STDERR, '[ERROR] ' . $error->getMessage() . PHP_EOL);

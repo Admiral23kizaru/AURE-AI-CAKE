@@ -5,8 +5,7 @@ require_once __DIR__ . '/order_service.php';
 function create_ai_order(PDO $pdo, int $aiId, int $uid, string $date, string $time, string $size, string $note, string $payment = 'cash'): array
 {
     if (!in_array($size, ['Small', 'Medium', 'Large'], true)) throw new InvalidArgumentException('Choose a valid cake size.');
-    if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $date) || $date < date('Y-m-d')) throw new InvalidArgumentException('Choose a valid future pickup date.');
-    if (!preg_match('/^\d{2}:\d{2}$/', $time)) throw new InvalidArgumentException('Choose an available pickup time.');
+    validate_pickup_schedule($date, $time);
     $payment = $payment === 'gcash' ? 'gcash' : 'cash';
     $note = mb_substr(trim($note), 0, 1000);
     $pdo->beginTransaction();

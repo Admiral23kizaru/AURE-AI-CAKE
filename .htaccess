@@ -2,7 +2,7 @@ Options -Indexes
 RewriteEngine On
 
 # Internal services, migrations, logs, and retired project copies are never web endpoints.
-RewriteRule ^(?:inc|cli|migrations|logs|webhooks|PHPMailer|backup_paymongo|Cake[\x20%]Shop[\x20%]2026)(?:/|$) - [F,L,NC]
+RewriteRule ^(?:inc|cli|migrations|logs|webhooks|PHPMailer|backup_paymongo|Cake[\x20%]Shop[\x20%]2026|frontend-backup-[^/]+)(?:/|$) - [F,L,NC]
 
 <FilesMatch "^(\.env|config\.php|config\.production\.php|migrate(_002)?\.php|sms_test\.php|test_email\.php|default\.php|ai_gcash_payment\.php)$">
   Require all denied

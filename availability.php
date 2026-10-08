@@ -23,14 +23,18 @@ if ($size !== '' && !in_array($size, ['Small', 'Medium', 'Large'], true)) {
     exit;
 }
 
-$slotQuery = $pdo->prepare(
-    "SELECT id, DATE_FORMAT(pickup_time, '%H:%i') pickup_time, capacity, reserved,
-            GREATEST(capacity-reserved,0) remaining
-       FROM pickup_capacities
-      WHERE pickup_date=? AND active=1 AND reserved<capacity
-      ORDER BY pickup_time"
-);
-$slotQuery->execute([$date]);
+$slotSql = "SELECT id, DATE_FORMAT(pickup_time, '%H:%i') pickup_time, capacity, reserved,
+                   GREATEST(capacity-reserved,0) remaining
+              FROM pickup_capacities
+             WHERE pickup_date=? AND active=1 AND reserved<capacity";
+$slotParams = [$date];
+if ($date === date('Y-m-d')) {
+    $slotSql .= ' AND pickup_time > ?';
+    $slotParams[] = date('H:i:s');
+}
+$slotSql .= ' ORDER BY pickup_time';
+$slotQuery = $pdo->prepare($slotSql);
+$slotQuery->execute($slotParams);
 $slots = array_map(static fn(array $row): array => [
     'id' => (int) $row['id'],
     'time' => (string) $row['pickup_time'],
