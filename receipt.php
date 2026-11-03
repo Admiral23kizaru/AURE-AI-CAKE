@@ -41,7 +41,7 @@ page_start('Receipt');
   </div>
   <dl class="row mt-4">
     <dt class="col-5">Customer</dt><dd class="col-7"><?= e($order['customer_name']) ?></dd>
-    <dt class="col-5">Pickup schedule</dt><dd class="col-7"><?= e($order['pickup_date']) ?> <?= e(substr((string) $order['pickup_time'], 0, 5)) ?></dd>
+    <dt class="col-5">Pickup schedule</dt><dd class="col-7"><?= e($order['pickup_date']) ?> <?= e(format_ph_time((string) $order['pickup_time'])) ?> PHT</dd>
     <dt class="col-5">Status</dt><dd class="col-7"><?= e($order['status']) ?></dd>
     <dt class="col-5">Payment</dt><dd class="col-7"><?= e(ucfirst($order['payment_method'])) ?> / <?= e(ucfirst($order['payment_status'])) ?></dd>
     <?php if ($order['payment_reference']): ?><dt class="col-5">Payment reference</dt><dd class="col-7"><?= e($order['payment_reference']) ?></dd><?php endif; ?>

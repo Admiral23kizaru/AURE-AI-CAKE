@@ -191,7 +191,7 @@ page_start('Order management');
           </div>
 
           <dl class="row small mb-3">
-            <dt class="col-4">Pickup</dt><dd class="col-8"><?= e($order['pickup_date']) ?> at <?= e(substr((string) $order['pickup_time'], 0, 5)) ?></dd>
+            <dt class="col-4">Pickup</dt><dd class="col-8"><?= e($order['pickup_date']) ?> at <?= e(format_ph_time((string) $order['pickup_time'])) ?> PHT</dd>
             <dt class="col-4">Shop</dt><dd class="col-8"><?= e($order['store_name']) ?></dd>
             <dt class="col-4">Subtotal</dt><dd class="col-8">&#8369;<?= number_format((float) $order['subtotal'], 2) ?></dd>
             <dt class="col-4">Discount</dt><dd class="col-8">-&#8369;<?= number_format((float) $order['discount_total'], 2) ?></dd>

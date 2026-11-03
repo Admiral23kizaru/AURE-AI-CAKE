@@ -64,7 +64,7 @@ page_start('Order ' . $order['order_number']);
           </div>
         <?php endif; ?>
         <dl class="row mt-3">
-          <dt class="col-sm-4">Pickup</dt><dd class="col-sm-8"><?= e($order['pickup_date']) ?> at <?= e(substr((string) $order['pickup_time'], 0, 5)) ?></dd>
+          <dt class="col-sm-4">Pickup</dt><dd class="col-sm-8"><?= e($order['pickup_date']) ?> at <?= e(format_ph_time((string) $order['pickup_time'])) ?> PHT</dd>
           <dt class="col-sm-4">Shop</dt><dd class="col-sm-8"><?= e($order['store_name']) ?></dd>
           <dt class="col-sm-4">Payment</dt><dd class="col-sm-8"><?= e(ucfirst($order['payment_method'])) ?> &middot; <?= e(ucfirst($order['payment_status'])) ?></dd>
           <dt class="col-sm-4">Subtotal</dt><dd class="col-sm-8">&#8369;<?= number_format((float) $order['subtotal'], 2) ?></dd>

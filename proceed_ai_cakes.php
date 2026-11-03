@@ -114,7 +114,7 @@ async function loadAvailability(){
       message.textContent='No pickup capacity is available for the selected date.';
       return;
     }
-    data.slots.forEach(slot=>{const option=document.createElement('option');option.value=String(slot.time).slice(0,5);option.textContent=displayTime(option.value)+' ('+Number(slot.remaining||0)+' remaining)';timeInput.appendChild(option);});
+    data.slots.forEach(slot=>{const option=document.createElement('option');option.value=String(slot.time).slice(0,5);option.textContent=(slot.label||displayTime(option.value))+' ('+Number(slot.remaining||0)+' remaining)';timeInput.appendChild(option);});
     timeInput.disabled=false;
     submitButton.disabled=false;
     message.textContent=Number(data.ai_capacity.remaining)+' '+sizeInput.value.toLowerCase()+' AI cake space(s) remaining.';

@@ -38,6 +38,7 @@ $slotQuery->execute($slotParams);
 $slots = array_map(static fn(array $row): array => [
     'id' => (int) $row['id'],
     'time' => (string) $row['pickup_time'],
+    'label' => format_ph_time((string) $row['pickup_time']),
     'capacity' => (int) $row['capacity'],
     'reserved' => (int) $row['reserved'],
     'remaining' => (int) $row['remaining'],

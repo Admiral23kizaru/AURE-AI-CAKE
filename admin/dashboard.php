@@ -26,7 +26,6 @@ include __DIR__ . '/../inc/header.php';
     <h1>Admin overview</h1>
     <p>Manage the bakery catalog, order operations, pickup readiness, and customer accounts from one workspace.</p>
   </div>
-  <a class="btn btn-purple" href="readiness.php"><i class="bi bi-clipboard2-check me-2" aria-hidden="true"></i>Review readiness</a>
 </section>
 
 <section class="dashboard-stat-grid" aria-label="Business summary">

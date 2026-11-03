@@ -2,7 +2,7 @@
 declare(strict_types=1);
 require_once __DIR__.'/notification_service.php';
 function otp_delivery_feedback(array $result): array {
-    if(!empty($result['disabled']))return ['type'=>'warning','message'=>'SMS delivery is disabled. Your account remains pending until a code can be sent.'];
+    if(!empty($result['disabled']))return ['type'=>'warning','message'=>'A verification code is not available yet. Please try Resend code later.'];
     if(!empty($result['sent']))return ['type'=>'success','message'=>'A six-digit verification code was sent to your mobile number.'];
     return ['type'=>'danger','message'=>'The verification code could not be sent. Please use Resend after the waiting period or contact the shop.'];
 }

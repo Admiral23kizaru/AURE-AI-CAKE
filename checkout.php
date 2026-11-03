@@ -471,7 +471,7 @@ async function generateSlotsForDate(dateStr){
     slots.forEach(slot=>{
       const opt=document.createElement('option');
       opt.value=String(slot.time).slice(0,5);
-      opt.textContent=minutesTo12(timeToMinutes(opt.value))+' ('+Number(slot.remaining||0)+' remaining)';
+      opt.textContent=(slot.label||minutesTo12(timeToMinutes(opt.value)))+' ('+Number(slot.remaining||0)+' remaining)';
       pickupTimeSelect.appendChild(opt);
     });
     pickupTimeSelect.disabled=false;
