@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/security.php';
 function ai_design_filename(?string $storedPath): ?string
 {
     $name = basename(str_replace('\\', '/', trim((string) $storedPath)));
@@ -13,7 +14,7 @@ function ai_design_filename(?string $storedPath): ?string
 function ai_design_image_url(?string $storedPath): ?string
 {
     $name = ai_design_filename($storedPath);
-    return $name === null ? null : '/AI-CAKE/uploads/ai-cakes/' . rawurlencode($name);
+    return $name === null ? null : app_url('uploads/ai-cakes/' . rawurlencode($name));
 }
 
 function ai_design_image_exists(?string $storedPath): bool

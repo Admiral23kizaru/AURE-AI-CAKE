@@ -24,18 +24,18 @@ function role_home_path(?string $role = null): string
 {
     $role ??= current_user()['role'] ?? 'guest';
     return match ($role) {
-        'admin' => '/AI-CAKE/admin/dashboard.php',
-        'staff' => '/AI-CAKE/staff/dashboard.php',
-        'customer' => '/AI-CAKE/my_orders.php',
-        default => '/AI-CAKE/login.php',
+        'admin' => app_url('admin/dashboard.php'),
+        'staff' => app_url('staff/dashboard.php'),
+        'customer' => app_url('my_orders.php'),
+        default => app_url('login.php'),
     };
 }
 
-function require_login(string $loginPath = '/AI-CAKE/login.php'): void
+function require_login(?string $loginPath = null): void
 {
     if (!is_logged_in()) {
-        $_SESSION['return_to'] = $_SERVER['REQUEST_URI'] ?? '/AI-CAKE/';
-        redirect($loginPath);
+        $_SESSION['return_to'] = $_SERVER['REQUEST_URI'] ?? app_url();
+        redirect($loginPath ?? app_url('login.php'));
     }
 }
 
@@ -61,7 +61,7 @@ function require_role(array|string $roles): void
     $databaseUser = $query->fetch();
     if (!$databaseUser || !(int) $databaseUser['is_active'] || $databaseUser['role'] !== $sessionUser['role']) {
         logout_user();
-        redirect('/AI-CAKE/login.php?session=expired');
+        redirect(app_url('login.php?session=expired'));
     }
 }
 
@@ -75,10 +75,10 @@ function require_customer(): void
     $query->execute([user_id()]);
     if (!$query->fetchColumn()) {
         if (!empty($_SESSION['otp_challenge_id'])) {
-            redirect('/AI-CAKE/verify_otp.php');
+            redirect(app_url('verify_otp.php'));
         }
         logout_user();
-        redirect('/AI-CAKE/login.php?verification=required');
+        redirect(app_url('login.php?verification=required'));
     }
 }
 

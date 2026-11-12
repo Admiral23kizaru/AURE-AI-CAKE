@@ -6,7 +6,7 @@ require_once __DIR__ . '/inc/storefront.php';
 require_once __DIR__ . '/inc/recommendation_service.php';
 
 if (is_logged_in() && (current_user()['role'] ?? '') === 'customer') {
-    header('Location: /AI-CAKE/customer_menu.php', true, 302);
+    header('Location: ' . app_url('customer_menu.php'), true, 302);
     exit;
 }
 
@@ -45,10 +45,10 @@ try {
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Browse the full cake menu from Aure Sanchez House of Cakes.">
   <title>Menu | Aure Sanchez House of Cakes</title>
-  <link rel="icon" href="/AI-CAKE/uploads/logo/logotab.png">
+  <link rel="icon" href="<?= storefront_escape(app_url('uploads/logo/logotab.png')) ?>">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
-  <link href="/AI-CAKE/assets/css/storefront.css?v=20260928-3" rel="stylesheet">
+  <link href="<?= storefront_escape(app_url('assets/css/storefront.css?v=20260928-3')) ?>" rel="stylesheet">
 </head>
 <body class="storefront-page">
 <?php storefront_header('menu'); ?>
@@ -68,9 +68,9 @@ try {
         <div>
           <h2 id="ai-menu-title">Have a cake idea of your own?</h2>
           <p>Use the AI cake designer to visualize it, save it, and request a custom order.</p>
-          <a class="btn storefront-primary-button" href="/AI-CAKE/ai_cake.php">Design with AI</a>
+          <a class="btn storefront-primary-button" href="<?= storefront_escape(app_url('ai_cake.php')) ?>">Design with AI</a>
         </div>
-        <div class="ai-visual" aria-hidden="true"><div class="ai-visual-inner"><img class="ai-robot-icon" src="/AI-CAKE/robot.svg" width="180" height="180" alt=""></div></div>
+        <div class="ai-visual" aria-hidden="true"><div class="ai-visual-inner"><img class="ai-robot-icon" src="<?= storefront_escape(app_url('robot.svg')) ?>" width="180" height="180" alt=""></div></div>
       </div>
     </div>
   </section>

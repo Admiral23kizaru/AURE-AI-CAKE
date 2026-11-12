@@ -7,6 +7,6 @@ require __DIR__ . '/inc/auth.php';
 // order data without ownership verification. Tracking now uses unified,
 // authenticated customer history.
 if (is_logged_in() && current_user()['role'] === 'customer') {
-    redirect('/AI-CAKE/my_orders.php');
+    redirect(app_url('my_orders.php'));
 }
-redirect('/AI-CAKE/login.php');
+redirect(app_url('login.php'));

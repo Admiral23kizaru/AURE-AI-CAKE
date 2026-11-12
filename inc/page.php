@@ -22,33 +22,33 @@ function page_start(string $title, bool $showActions = true): void
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <title><?= e($title) ?> | Aure Sanchez House of Cakes</title>
-      <link rel="icon" href="/AI-CAKE/uploads/logo/logotab.png">
+      <link rel="icon" href="<?= e(app_url('uploads/logo/logotab.png')) ?>">
       <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
       <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
-      <link href="/AI-CAKE/assets/css/app.css?v=20260928-3" rel="stylesheet">
+      <link href="<?= e(app_url('assets/css/app.css?v=20260928-3')) ?>" rel="stylesheet">
     </head>
     <body class="app-page">
       <nav class="navbar app-nav<?= $showActions ? '' : ' app-nav-minimal' ?>">
         <div class="container app-nav-inner">
           <?php if (!$showActions): ?>
-            <a class="auth-back-link" href="/AI-CAKE/"><i class="bi bi-arrow-left" aria-hidden="true"></i><span>Back to home</span></a>
+            <a class="auth-back-link" href="<?= e(app_url()) ?>"><i class="bi bi-arrow-left" aria-hidden="true"></i><span>Back to home</span></a>
           <?php endif; ?>
-          <a class="app-brand d-flex align-items-center gap-2" href="/AI-CAKE/">
-            <img src="/AI-CAKE/logo.png" height="42" alt="Aure Sanchez House of Cakes">
+          <a class="app-brand d-flex align-items-center gap-2" href="<?= e(app_url()) ?>">
+            <img src="<?= e(app_url('logo.png')) ?>" height="42" alt="Aure Sanchez House of Cakes">
           </a>
           <?php if ($showActions): ?>
             <div class="d-flex gap-2 align-items-center">
               <?php if ($loggedIn): ?>
                 <?php if ($role === 'customer'): ?>
                   <div class="app-customer-links d-none d-lg-flex" aria-label="Customer navigation">
-                    <a href="/AI-CAKE/my_orders.php">Orders</a><a href="/AI-CAKE/customer_menu.php">Menu</a><a href="/AI-CAKE/favorites.php">Favorites</a><a href="/AI-CAKE/account.php">Profile</a><a href="/AI-CAKE/ai_cake.php">AI cake</a>
+                    <a href="<?= e(app_url('my_orders.php')) ?>">Orders</a><a href="<?= e(app_url('customer_menu.php')) ?>">Menu</a><a href="<?= e(app_url('favorites.php')) ?>">Favorites</a><a href="<?= e(app_url('account.php')) ?>">Profile</a><a href="<?= e(app_url('ai_cake.php')) ?>">AI cake</a>
                   </div>
                 <?php endif; ?>
                 <a class="btn btn-sm btn-outline-secondary" href="<?= e($home) ?>"><?= e($accountLabel) ?></a>
-                <form method="post" action="/AI-CAKE/logout.php" class="m-0"><?= csrf_field() ?><button class="btn btn-sm btn-purple">Log out</button></form>
+                <form method="post" action="<?= e(app_url('logout.php')) ?>" class="m-0"><?= csrf_field() ?><button class="btn btn-sm btn-purple">Log out</button></form>
               <?php else: ?>
-                <a class="btn btn-sm btn-outline-secondary" href="/AI-CAKE/login.php">Log in</a>
-                <a class="btn btn-sm btn-purple" href="/AI-CAKE/register.php">Register</a>
+                <a class="btn btn-sm btn-outline-secondary" href="<?= e(app_url('login.php')) ?>">Log in</a>
+                <a class="btn btn-sm btn-purple" href="<?= e(app_url('register.php')) ?>">Register</a>
               <?php endif; ?>
             </div>
           <?php else: ?>
@@ -58,7 +58,7 @@ function page_start(string $title, bool $showActions = true): void
       </nav>
       <?php if ($showActions && $loggedIn && $role === 'customer'): ?>
         <nav class="app-customer-mobile-nav d-lg-none" aria-label="Customer navigation">
-          <a href="/AI-CAKE/my_orders.php">Orders</a><a href="/AI-CAKE/customer_menu.php">Menu</a><a href="/AI-CAKE/favorites.php">Favorites</a><a href="/AI-CAKE/account.php">Profile</a><a href="/AI-CAKE/ai_cake.php">AI cake</a>
+          <a href="<?= e(app_url('my_orders.php')) ?>">Orders</a><a href="<?= e(app_url('customer_menu.php')) ?>">Menu</a><a href="<?= e(app_url('favorites.php')) ?>">Favorites</a><a href="<?= e(app_url('account.php')) ?>">Profile</a><a href="<?= e(app_url('ai_cake.php')) ?>">AI cake</a>
         </nav>
       <?php endif; ?>
     <?php

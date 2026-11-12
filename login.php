@@ -31,7 +31,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             $otp=issue_otp($pdo,(int)$user['id'],'registration',(string)$user['phone'],(string)$user['email']);
             $_SESSION['otp_challenge_id']=$otp['challenge_id'];
             $feedback=otp_delivery_feedback($otp);$_SESSION['otp_notice']=$feedback['message'];$_SESSION['otp_notice_type']=$feedback['type'];
-            redirect('/AI-CAKE/verify_otp.php');
+            redirect(app_url('verify_otp.php'));
         } catch (Throwable $otpError) {
             $error=$otpError->getMessage();
         }

@@ -10,12 +10,12 @@ require_staff_or_admin();
 
 if (!defined('AI_CAKE_ORDER_WORKSPACE') && (current_user()['role'] ?? '') === 'admin') {
     $query = (string) (parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_QUERY) ?: '');
-    redirect('/AI-CAKE/admin/orders.php' . ($query !== '' ? '?' . $query : ''));
+    redirect(app_url('admin/orders.php' . ($query !== '' ? '?' . $query : '')));
 }
 $isAdminOrderWorkspace = defined('AI_CAKE_ORDER_WORKSPACE') && AI_CAKE_ORDER_WORKSPACE === 'admin';
-$orderListUrl = $isAdminOrderWorkspace ? '/AI-CAKE/admin/orders.php' : '/AI-CAKE/staff/unified_orders.php';
-$pickupScheduleUrl = $isAdminOrderWorkspace ? '/AI-CAKE/admin/pickup_schedule.php' : '/AI-CAKE/staff/pickup_schedule.php';
-$conversationUrl = $isAdminOrderWorkspace ? '/AI-CAKE/admin/chat.php' : '/AI-CAKE/staff/chat.php';
+$orderListUrl = $isAdminOrderWorkspace ? app_url('admin/orders.php') : app_url('staff/unified_orders.php');
+$pickupScheduleUrl = $isAdminOrderWorkspace ? app_url('admin/pickup_schedule.php') : app_url('staff/pickup_schedule.php');
+$conversationUrl = $isAdminOrderWorkspace ? app_url('admin/chat.php') : app_url('staff/chat.php');
 $workspaceLabel = $isAdminOrderWorkspace ? 'Administrator workspace' : 'Staff workspace';
 
 function unified_orders_query(array $source, bool $includePage = true): string
@@ -48,7 +48,7 @@ function normal_cake_thumbnail_url(?string $storedPath): ?string
     if ($name === '' || !preg_match('/\A[A-Za-z0-9][A-Za-z0-9._-]*\.(?:png|jpe?g|webp)\z/i', $name)) {
         return null;
     }
-    return is_file(__DIR__ . '/../uploads/' . $name) ? '/AI-CAKE/uploads/' . rawurlencode($name) : null;
+    return is_file(__DIR__ . '/../uploads/' . $name) ? app_url('uploads/' . rawurlencode($name)) : null;
 }
 
 $message = '';

@@ -1,6 +1,9 @@
 Options -Indexes
 RewriteEngine On
 
+
+# Deployment metadata and repository internals must never be public.
+RewriteRule ^(?:\.git|\.cursor|\.qodo)(?:/|$) - [F,L,NC]
 # Internal services, migrations, logs, and retired project copies are never web endpoints.
 RewriteRule ^(?:inc|cli|migrations|logs|webhooks|PHPMailer|backup_paymongo|Cake[\x20%]Shop[\x20%]2026|frontend-backup-[^/]+)(?:/|$) - [F,L,NC]
 

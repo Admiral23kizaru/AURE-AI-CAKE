@@ -10,4 +10,4 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 require_post_csrf();
 logout_user();
-redirect('/AI-CAKE/login.php');
+redirect(app_url('login.php'));

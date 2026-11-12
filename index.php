@@ -29,10 +29,10 @@ $heroSecondary = $heroCakes[1]['picture'] ?? $heroPrimary;
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Browse cakes for pickup from Aure Sanchez House of Cakes or create a custom AI cake design.">
   <title>Aure Sanchez House of Cakes</title>
-  <link rel="icon" href="/AI-CAKE/uploads/logo/logotab.png">
+  <link rel="icon" href="<?= storefront_escape(app_url('uploads/logo/logotab.png')) ?>">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
-  <link href="/AI-CAKE/assets/css/storefront.css?v=20260928-3" rel="stylesheet">
+  <link href="<?= storefront_escape(app_url('assets/css/storefront.css?v=20260928-3')) ?>" rel="stylesheet">
 </head>
 <body class="storefront-page">
 <?php storefront_header('home'); ?>
@@ -46,8 +46,8 @@ $heroSecondary = $heroCakes[1]['picture'] ?? $heroPrimary;
           <h1 id="hero-title">Cakes worth celebrating.</h1>
           <p>Choose a house favorite, schedule your pickup, or turn your own idea into a custom cake.</p>
           <div class="storefront-hero-actions">
-            <a class="btn storefront-primary-button" href="/AI-CAKE/view-all.php">Browse cakes</a>
-            <a class="btn storefront-secondary-button" href="/AI-CAKE/ai_cake.php">Design with AI</a>
+            <a class="btn storefront-primary-button" href="<?= storefront_escape(app_url('view-all.php')) ?>">Browse cakes</a>
+            <a class="btn storefront-secondary-button" href="<?= storefront_escape(app_url('ai_cake.php')) ?>">Design with AI</a>
           </div>
         </div>
         <div class="storefront-hero-media">
@@ -68,12 +68,12 @@ $heroSecondary = $heroCakes[1]['picture'] ?? $heroPrimary;
     <div class="container storefront-container">
       <div class="section-heading-row">
         <h2 id="category-title">Choose your kind of cake</h2>
-        <a class="section-link" href="/AI-CAKE/view-all.php">See the full menu</a>
+        <a class="section-link" href="<?= storefront_escape(app_url('view-all.php')) ?>">See the full menu</a>
       </div>
       <?php if ($categories): ?>
         <div class="category-rail" role="list">
           <?php foreach ($categories as $category): ?>
-            <a class="category-link" role="listitem" href="/AI-CAKE/view-all.php#category-<?= (int) $category['id'] ?>">
+            <a class="category-link" role="listitem" href="<?= storefront_escape(app_url('view-all.php#category-' . (int) $category['id'])) ?>">
               <img src="<?= storefront_escape(storefront_product_image('categories/' . ($category['picture'] ?? ''))) ?>" width="48" height="48" alt="">
               <span><?= storefront_escape($category['name']) ?></span>
             </a>
@@ -89,7 +89,7 @@ $heroSecondary = $heroCakes[1]['picture'] ?? $heroPrimary;
     <div class="container storefront-container">
       <div class="section-heading-row">
         <h2 id="new-title">Fresh from the kitchen</h2>
-        <a class="section-link" href="/AI-CAKE/view-all.php#new">View all new cakes</a>
+        <a class="section-link" href="<?= storefront_escape(app_url('view-all.php#new')) ?>">View all new cakes</a>
       </div>
       <?php if ($newCakes): ?>
         <div class="product-grid">
@@ -105,7 +105,7 @@ $heroSecondary = $heroCakes[1]['picture'] ?? $heroPrimary;
     <div class="container storefront-container">
       <div class="section-heading-row">
         <h2 id="favorite-title">Customer favorites</h2>
-        <a class="section-link" href="/AI-CAKE/view-all.php#best-sellers">See all favorites</a>
+        <a class="section-link" href="<?= storefront_escape(app_url('view-all.php#best-sellers')) ?>">See all favorites</a>
       </div>
       <?php if ($bestSellers): ?>
         <div class="product-grid">
@@ -123,9 +123,9 @@ $heroSecondary = $heroCakes[1]['picture'] ?? $heroPrimary;
         <div>
           <h2 id="ai-title">Start with an idea. See your cake.</h2>
           <p>Describe the look you want, generate a design, then submit it for pricing and pickup scheduling.</p>
-          <a class="btn storefront-primary-button" href="/AI-CAKE/ai_cake.php">Create an AI cake</a>
+          <a class="btn storefront-primary-button" href="<?= storefront_escape(app_url('ai_cake.php')) ?>">Create an AI cake</a>
         </div>
-        <div class="ai-visual" aria-hidden="true"><div class="ai-visual-inner"><img class="ai-robot-icon" src="/AI-CAKE/robot.svg" width="180" height="180" alt=""></div></div>
+        <div class="ai-visual" aria-hidden="true"><div class="ai-visual-inner"><img class="ai-robot-icon" src="<?= storefront_escape(app_url('robot.svg')) ?>" width="180" height="180" alt=""></div></div>
       </div>
     </div>
   </section>

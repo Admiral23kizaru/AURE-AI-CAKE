@@ -4,6 +4,7 @@ require __DIR__ . '/inc/db.php';
 require __DIR__ . '/inc/page.php';
 require __DIR__ . '/inc/order_service.php';
 require __DIR__ . '/inc/ai_design.php';
+require __DIR__ . '/inc/xendit_payment_service.php';
 require_customer();
 
 $id = (int) ($_GET['id'] ?? 0);
@@ -13,6 +14,15 @@ $order = $query->fetch();
 if (!$order) {
     http_response_code(404);
     exit('Order not found.');
+}
+
+// Xendit redirects the paying customer back here. On hosts that block inbound
+// webhooks, verify this customer-owned invoice through Xendit at that point.
+if (($order['payment_method'] ?? '') === 'gcash' && ($order['payment_status'] ?? '') !== 'paid') {
+    if (sync_xendit_payment_for_order($pdo, $order)) {
+        $query->execute([$id, user_id()]);
+        $order = $query->fetch() ?: $order;
+    }
 }
 $historyQuery = $pdo->prepare('SELECT * FROM order_status_history WHERE order_header_id=? ORDER BY id');
 $historyQuery->execute([$id]);
